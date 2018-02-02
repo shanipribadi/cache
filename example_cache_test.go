@@ -7,7 +7,7 @@ import (
 	"github.com/go-redis/redis"
 	"github.com/vmihailenco/msgpack"
 
-	"github.com/go-redis/cache"
+	"github.com/shanipribadi/cache"
 )
 
 type Object struct {

@@ -8,12 +8,13 @@ import (
 
 	"github.com/go-redis/redis"
 
-	"github.com/go-redis/cache/internal/lrucache"
-	"github.com/go-redis/cache/internal/singleflight"
+	"github.com/shanipribadi/cache/internal/lrucache"
+	"github.com/shanipribadi/cache/internal/singleflight"
 )
 
 var ErrCacheMiss = errors.New("cache: key is missing")
 var errRedisLocalCacheNil = errors.New("cache: both Redis and LocalCache are nil")
+var ErrRedisUnavailable = errors.New("cache: Redis is unavailable")
 
 type rediser interface {
 	Set(key string, value interface{}, expiration time.Duration) *redis.StatusCmd
@@ -106,7 +107,7 @@ func (cd *Codec) set(item *Item) ([]byte, error) {
 	err = cd.Redis.Set(item.Key, b, item.exp()).Err()
 	if err != nil {
 		log.Printf("cache: Set key=%q failed: %s", item.Key, err)
-		return nil, err
+		return b, ErrRedisUnavailable
 	}
 	return b, nil
 }
@@ -224,6 +225,9 @@ func (cd *Codec) getItemBytesOnce(item *Item) ([]byte, error) {
 			Object:     obj,
 			Expiration: item.Expiration,
 		})
+		if err == ErrRedisUnavailable {
+			return b, nil
+		}
 		return b, err
 	})
 	if err != nil {

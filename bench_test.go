@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-redis/cache"
+	"github.com/shanipribadi/cache"
 )
 
 func BenchmarkOnce(b *testing.B) {

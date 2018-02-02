@@ -12,7 +12,7 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/vmihailenco/msgpack"
 
-	"github.com/go-redis/cache"
+	"github.com/shanipribadi/cache"
 )
 
 func TestModels(t *testing.T) {
